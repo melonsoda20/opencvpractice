@@ -37,9 +37,25 @@ class PlotImagesParams:
         Subplot: int,
         Image: cv.Mat,
         Title: str,
-        Suptitle: str
+        Suptitle: str,
+        Cmap: str = ''
     ) -> None:
         self.Subplot = Subplot
         self.Image = Image
         self.Title = Title
         self.Suptitle = Suptitle
+        self.Cmap = Cmap
+
+
+class GetHarrisCornerDetectionParams:
+    def __init__(
+        self,
+        Image: cv.Mat,
+        BlockSize: int,
+        KSize: int,
+        K: float
+    ) -> None:
+        self.Image = Image
+        self.BlockSize = BlockSize
+        self.KSize = KSize
+        self.K = K

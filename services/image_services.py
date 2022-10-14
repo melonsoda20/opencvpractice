@@ -8,13 +8,14 @@ from .constants.constants import (
 from .models.models import (
     DrawingPosition,
     DrawRectangle,
-    PlotImagesParams
+    PlotImagesParams,
+    GetHarrisCornerDetectionParams
 )
 
 
 # package import
 import cv2 as cv
-# import numpy as np
+import numpy as np
 import matplotlib.pyplot as plt
 
 
@@ -48,7 +49,10 @@ def display_image_plots(
 ):
     for param in params:
         plt.subplot(param.Subplot)
-        plt.imshow(param.Image)
+        if param.Cmap != '':
+            plt.imshow(param.Image, cmap=param.Cmap)
+        else:
+            plt.imshow(param.Image)
         plt.title(param.Title)
         plt.suptitle(param.Suptitle)
 
@@ -117,3 +121,22 @@ def draw_rectangle(
         params.Color,
         params.Thickness
     )
+
+
+def get_harris_corner_detection(
+    params: GetHarrisCornerDetectionParams
+):
+    image_copy = params.Image.copy()
+    gray_image = cv.cvtColor(image_copy, cv.COLOR_BGR2GRAY)
+    np_data = gray_image.astype(np.float32)
+    result = cv.cornerHarris(
+        src=np_data,
+        blockSize=params.BlockSize,
+        ksize=params.KSize,
+        k=params.K
+    )
+
+    result = cv.dilate(result, None)
+    image_copy[result > 0.01*result.max()] = [255, 0, 0]
+
+    return image_copy
