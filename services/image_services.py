@@ -9,7 +9,9 @@ from .models.models import (
     DrawingPosition,
     DrawRectangle,
     PlotImagesParams,
-    GetHarrisCornerDetectionParams
+    GetHarrisCornerDetectionParams,
+    DetectImageUsingCascadeClassfierParams,
+    CascadeClassifiersData
 )
 
 
@@ -140,3 +142,49 @@ def get_harris_corner_detection(
     image_copy[result > 0.01*result.max()] = [255, 0, 0]
 
     return image_copy
+
+
+def get_cascade_classifier() -> CascadeClassifiersData:
+    car_classifier = cv.CascadeClassifier(
+        'F:\\Projects\\Python\\OpenCV\\services\\cascade_classifier\\cars.xml'
+    )
+    human_classifier = cv.CascadeClassifier(
+        'F:\\Projects\\Python\\OpenCV\\services\\cascade_classifier\\fullbody.xml'
+    )
+
+    return CascadeClassifiersData(car_classifier, human_classifier)
+
+
+def detect_image_using_cascade(
+    params: DetectImageUsingCascadeClassfierParams
+) -> Mat:
+    cascade_classifier = get_cascade_classifier()
+    image_copy = params.ImageData.copy()
+    colored_image = cv.cvtColor(image_copy, cv.COLOR_BGR2RGB)
+    resized_img = cv.resize(colored_image, (450, 450))
+    gray_image = cv.cvtColor(resized_img, cv.COLOR_RGB2GRAY)
+    blur_image = cv.GaussianBlur(gray_image, (5, 5), 0)
+    dilated_image = cv.dilate(blur_image, np.ones((3, 3)))
+    kernel = cv.getStructuringElement(cv.MORPH_ELLIPSE, (2, 2))
+    closing_image = cv.morphologyEx(dilated_image, cv.MORPH_CLOSE, kernel)
+
+    detected_cars = cascade_classifier.CarClassifier.detectMultiScale(
+        closing_image,
+        1.1,
+        1
+    )
+
+    detected_humans = cascade_classifier.HumanClassifier.detectMultiScale(
+        closing_image,
+        1.1,
+        1
+    )
+
+    for (x, y, w, h) in detected_cars:
+        cv.rectangle(resized_img, (x, y), (x+w, y+h), (0, 0, 255), 2)
+
+    for (x, y, w, h) in detected_humans:
+        cv.rectangle(image_copy, (x, y), (x+w, y+h), (0, 255, 0), 2)
+
+    cv.imshow('final', resized_img)
+    return resized_img

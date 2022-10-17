@@ -1,16 +1,19 @@
 from services.image_services import (
+    display_img,
     get_image_data,
     get_opencv_class,
     get_template_matching_results,
     display_image_plots,
-    get_harris_corner_detection
+    get_harris_corner_detection,
+    detect_image_using_cascade
 )
 from services.constants.constants import (
     TemplateMatchingConstants
 )
 from services.models.models import (
     PlotImagesParams,
-    GetHarrisCornerDetectionParams
+    GetHarrisCornerDetectionParams,
+    DetectImageUsingCascadeClassfierParams
 )
 
 opencv_class = get_opencv_class()
@@ -56,45 +59,69 @@ opencv_class = get_opencv_class()
 # endregion
 
 # region Corner Detection
-flat_chess_image = get_image_data(
-    './images/corner_detection/flat_chessboard.png',
-    opencv_class.COLOR_BGR2RGB
+# flat_chess_image = get_image_data(
+#     './images/corner_detection/flat_chessboard.png',
+#     opencv_class.COLOR_BGR2RGB
+# )
+
+# gray_flat_chess_image = get_image_data(
+#     './images/corner_detection/flat_chessboard.png',
+#     opencv_class.COLOR_BGR2GRAY
+# )
+
+# real_chess_image = get_image_data(
+#     './images/corner_detection/real_chessboard.jpg',
+#     opencv_class.COLOR_BGR2RGB
+# )
+
+# gray_real_chess_image = get_image_data(
+#     './images/corner_detection/real_chessboard.jpg',
+#     opencv_class.COLOR_BGR2GRAY
+# )
+
+# harris_corner_res = get_harris_corner_detection(
+#     GetHarrisCornerDetectionParams(
+#         real_chess_image,
+#         2,
+#         3,
+#         0.04
+#     )
+# )
+
+# plots_params = [PlotImagesParams(
+#         121,
+#         real_chess_image,
+#         'Original Image',
+#         ''
+#     ), PlotImagesParams(
+#         122,
+#         harris_corner_res,
+#         'After Harris Corner',
+#         '',
+#         ''
+#     )
+# ]
+# display_image_plots(plots_params)
+# endregion
+
+# region detection for vox project
+vehicle_image = get_image_data(
+    './images/miltiadis-fragkidis-uDDGsbYdk3k-unsplash.jpg',
+    opencv_class.COLOR_RGB2BGR
 )
 
-gray_flat_chess_image = get_image_data(
-    './images/corner_detection/flat_chessboard.png',
-    opencv_class.COLOR_BGR2GRAY
-)
-
-real_chess_image = get_image_data(
-    './images/corner_detection/real_chessboard.jpg',
-    opencv_class.COLOR_BGR2RGB
-)
-
-gray_real_chess_image = get_image_data(
-    './images/corner_detection/real_chessboard.jpg',
-    opencv_class.COLOR_BGR2GRAY
-)
-
-harris_corner_res = get_harris_corner_detection(
-    GetHarrisCornerDetectionParams(
-        real_chess_image,
-        2,
-        3,
-        0.04
-    )
-)
+params = DetectImageUsingCascadeClassfierParams(vehicle_image)
+image_res = detect_image_using_cascade(params)
 
 plots_params = [PlotImagesParams(
         121,
-        real_chess_image,
+        vehicle_image,
         'Original Image',
         ''
     ), PlotImagesParams(
         122,
-        harris_corner_res,
-        'After Harris Corner',
-        '',
+        opencv_class.cvtColor(image_res, opencv_class.COLOR_BGR2RGB),
+        'After Detection',
         ''
     )
 ]

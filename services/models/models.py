@@ -59,3 +59,21 @@ class GetHarrisCornerDetectionParams:
         self.BlockSize = BlockSize
         self.KSize = KSize
         self.K = K
+
+
+class DetectImageUsingCascadeClassfierParams:
+    def __init__(
+        self,
+        ImageData: cv.Mat
+    ) -> None:
+        self.ImageData = ImageData
+
+
+class CascadeClassifiersData:
+    def __init__(
+        self,
+        CarClassifier: cv.CascadeClassifier,
+        HumanClassifier: cv.CascadeClassifier
+    ) -> None:
+        self.CarClassifier = CarClassifier
+        self.HumanClassifier = HumanClassifier
