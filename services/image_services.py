@@ -151,8 +151,11 @@ def get_cascade_classifier() -> CascadeClassifiersData:
     human_classifier = cv.CascadeClassifier(
         'F:\\Projects\\Python\\OpenCV\\services\\cascade_classifier\\fullbody.xml'
     )
+    motorcycle_classifier = cv.CascadeClassifier(
+        'F:\\Projects\\Python\\OpenCV\\services\\cascade_classifier\\motorcycle.xml'
+    )
 
-    return CascadeClassifiersData(car_classifier, human_classifier)
+    return CascadeClassifiersData(car_classifier, human_classifier, motorcycle_classifier)
 
 
 def detect_image_using_cascade(
@@ -180,11 +183,24 @@ def detect_image_using_cascade(
         1
     )
 
+    detected_motorcycle = cascade_classifier.MotorcycleClassifier.detectMultiScale(
+        closing_image,
+        1.1,
+        1
+    )
+
     for (x, y, w, h) in detected_cars:
         cv.rectangle(resized_img, (x, y), (x+w, y+h), (0, 0, 255), 2)
 
     for (x, y, w, h) in detected_humans:
-        cv.rectangle(image_copy, (x, y), (x+w, y+h), (0, 255, 0), 2)
+        cv.rectangle(resized_img, (x, y), (x+w, y+h), (0, 255, 0), 2)
+
+    for (x, y, w, h) in detected_motorcycle:
+        cv.rectangle(resized_img, (x, y), (x+w, y+h), (255, 0, 0), 2)
+
+    print(len(detected_cars))
+    print(len(detected_humans))
+    print(len(detected_motorcycle))
 
     cv.imshow('final', resized_img)
     return resized_img

@@ -106,7 +106,7 @@ opencv_class = get_opencv_class()
 
 # region detection for vox project
 vehicle_image = get_image_data(
-    './images/miltiadis-fragkidis-uDDGsbYdk3k-unsplash.jpg',
+    './images/yeh-che-wei-Q78DeDcXUzQ-unsplash.jpg',
     opencv_class.COLOR_RGB2BGR
 )
 

@@ -73,7 +73,9 @@ class CascadeClassifiersData:
     def __init__(
         self,
         CarClassifier: cv.CascadeClassifier,
-        HumanClassifier: cv.CascadeClassifier
+        HumanClassifier: cv.CascadeClassifier,
+        MotorcycleClassifier: cv.CascadeClassifier
     ) -> None:
         self.CarClassifier = CarClassifier
         self.HumanClassifier = HumanClassifier
+        self.MotorcycleClassifier = MotorcycleClassifier
